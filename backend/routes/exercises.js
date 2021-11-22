@@ -1,6 +1,6 @@
 const router = require('express').Router();
 let Exercise = require('../models/exrecise.model');
-const {json} = require("express");
+// const {json} = require("express");
 
 router.route('/').get((req, res) => {
     Exercise.find().then(exercises => res.json(exercises)).catch(err => res.status(400).json('Error: ' + err));
@@ -19,7 +19,9 @@ router.route('/add').post((req, res) => {
         date
     });
 
-    newExercise.save().then(() => res.json('Exercise added!')).catch(err => res.stats(400).json('Error: '+ err));
+    newExercise.save()
+        .then(() => res.json('Exercise added!'))
+        .catch(err => res.status(400).json('Error: '+ err));
 });
 
 router.route('/:id').get((req, res) => {
@@ -37,7 +39,7 @@ router.route('/update/:id').post(((req, res) => {
         exercise.duration = req.body.duration;
         exercise.date = req.body.date;
 
-        exercise.save().then(() => res.json('Exercise updated!')).catch(err => res.stats(400).json('Error: '+ err));
+        exercise.save().then(() => res.json('Exercise updated!')).catch(err => res.status(400).json('Error: '+ err));
     }).catch(err => res.status(400).json('Error: ' +err));
 }));
 

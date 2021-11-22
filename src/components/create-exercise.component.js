@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
 // import {Link} from "react-router-dom";
 
 export default class CreateExercises extends Component{
@@ -25,10 +26,23 @@ export default class CreateExercises extends Component{
     }
 
     componentDidMount() {
-        this.setState({
+       /* this.setState({
             users: ['test user'],
             username: 'test user'
-        });
+        });*/
+
+        axios.get("http://localhost:5000/users/")
+            .then(response => {
+                if(response.data.length > 0){
+                    this.setState({
+                        users: response.data.map(user => user.username),
+                        username: response.data[0].username
+                    })
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
 
@@ -65,7 +79,13 @@ export default class CreateExercises extends Component{
             date: this.state.date
         }
 
+
         console.log(exercise);
+
+        //sending data to backend
+        axios.post("http://localhost:5000/exercises/add", exercise)
+            .then(res => console.log(res.data));
+
         window.location = '/';
     }
 
@@ -93,13 +113,13 @@ export default class CreateExercises extends Component{
                         </select>
                     </div>
 
-                    <div className={"form-group"}>
+                    <div className="form-group">
                         <label>Description: </label>
-                        <input
-                            type={"text"}
-                            required
-                            className={"form-control"}
-                            onChange={this.state.onChangeDescription}
+                        <input  type="text"
+                                required
+                                className="form-control"
+                                value={this.state.description}
+                                onChange={this.onChangeDescription}
                         />
                     </div>
 
@@ -118,17 +138,18 @@ export default class CreateExercises extends Component{
                         <div>
                             <DatePicker
                                 selected={this.state.date}
-                                onChane={this.onChangeDate}
+                                onChange={this.onChangeDate}
                             />
                         </div>
 
                     </div>
 
+
                     <div className={"form-group"}>
                         <input
                         type={"submit"}
                         value={"Create Exercise Log"}
-                        className={"btn btn-primary"}/>
+                        className={"btn btn-outline-success"}/>
                     </div>
 
                 </form>
